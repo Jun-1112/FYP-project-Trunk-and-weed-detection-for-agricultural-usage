@@ -11,10 +11,10 @@ Conventional weed control in oil palm plantations relies on blanket herbicide sp
 This raises a design question that had no clear answer in existing literature: for this specific task, is bounding-box detection sufficient, or does the added computational cost of segmentation earn its keep?
 
 Four gaps this project addresses:
-| 1 | No model specifically trained to distinguish trunks from weeds under real plantation conditions (canopy shadow, occlusion, cluttered ground cover) |
-| 2 | No comparative benchmark of detection vs. segmentation for this task |
-| 3 | Unknown robustness under real handheld-video conditions (motion blur, lighting variation) |
-| 4 | Unquantified risk of relying on externally-sourced training data |
+1. No model specifically trained to distinguish trunks from weeds under real plantation conditions (canopy shadow, occlusion, cluttered ground cover)
+2. No comparative benchmark of detection vs. segmentation for this task 
+3. Unknown robustness under real handheld-video conditions (motion blur, lighting variation) 
+4. Unquantified risk of relying on externally-sourced training data 
 
 # Approach
 Three models were trained and evaluated:
