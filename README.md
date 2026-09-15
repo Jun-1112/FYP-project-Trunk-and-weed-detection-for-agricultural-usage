@@ -201,7 +201,7 @@ It is stated plainly because they affect how these results should be read.
 2. Annotate real in-domain weed samples to enable direct domain-gap measurement and in-domain fine-tuning
 3. Collapse the 15 weed species into a single class and retrain, to separate task difficulty from domain shift
 4. Systematic hyperparameter optimisation
-Training in this project used Ultralytics defaults throughout (imgsz=640, batch=16, epochs=150, patience=25, default learning rate and augmentation settings), with no comparative tuning. A structured optimisation study would vary one parameter at a time against a fixed baseline, in rough order of expected impact for this task:
+- Training in this project used Ultralytics defaults throughout (imgsz=640, batch=16, epochs=150, patience=25, default learning rate and augmentation settings), with no comparative tuning. A structured optimisation study would vary one parameter at a time against a fixed baseline, in rough order of expected impact for this task:
 
 - **Input resolution (`imgsz`):** The highest-value parameter here, since the documented weakness is distant, small-scale trunks (Limitation 5). Training and inferring at 1280 instead of 640 preserves roughly four times the pixel area per object, directly addressing the small-object limitation. The trade-off is inference speed, which must be re-measuredagainst the 30 FPS threshold.
   
