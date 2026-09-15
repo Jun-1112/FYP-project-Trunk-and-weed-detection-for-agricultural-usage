@@ -203,15 +203,15 @@ It is stated plainly because they affect how these results should be read.
 4. Systematic hyperparameter optimisation
 Training in this project used Ultralytics defaults throughout (imgsz=640, batch=16, epochs=150, patience=25, default learning rate and augmentation settings), with no comparative tuning. A structured optimisation study would vary one parameter at a time against a fixed baseline, in rough order of expected impact for this task:
 
-- **Input resolution (`imgsz`):** the highest-value parameter here, since the documented weakness is distant, small-scale trunks (Limitation 5). Training and inferring at 1280 instead of 640 preserves roughly four times the pixel area per object, directly addressing the small-object limitation. The trade-off is inference speed, which must be re-measuredagainst the 30 FPS threshold.
+- **Input resolution (`imgsz`):** The highest-value parameter here, since the documented weakness is distant, small-scale trunks (Limitation 5). Training and inferring at 1280 instead of 640 preserves roughly four times the pixel area per object, directly addressing the small-object limitation. The trade-off is inference speed, which must be re-measuredagainst the 30 FPS threshold.
   
-- **Confidence threshold (`conf`):** held at the 0.25 default for all evaluation. Sweeping this would trace the precision/recall trade-off explicitly and allow selecting an operating point suited to the application: for trunk avoidance, higher recall is preferable to higher precision, since a missed trunk risks herbicide contact while a false positive only forgoes spraying.
+- **Confidence threshold (`conf`):** Held at the 0.25 default for all evaluation. Sweeping this would trace the precision/recall trade-off explicitly and allow selecting an operating point suited to the application: for trunk avoidance, higher recall is preferable to higher precision, since a missed trunk risks herbicide contact while a false positive only forgoes spraying.
   
-- **Augmentation settings:** currently untouched (Limitation 7). Enabling motion blur, brightness, and rotation augmentation would test whether the robustness measured in RQ3 improves, and would partially compensate for the narrow lighting range in the source footage.
+- **Augmentation settings:** Currently untouched (Limitation 7). Enabling motion blur, brightness, and rotation augmentation would test whether the robustness measured in RQ3 improves, and would partially compensate for the narrow lighting range in the source footage.
   
-- **Learning rate and optimiser:** — standard tuning targets, though likely lower impact here given that transfer learning from COCO-pretrained weights on a small dataset is relatively insensitive to these compared to training from scratch.
+- **Learning rate and optimiser:** It is the standard tuning targets, though likely lower impact here given that transfer learning from COCO-pretrained weights on a small dataset is relatively insensitive to these compared to training from scratch.
 
-- **Model scale to other variants or newer YOLO architecture family:** — the nano variant was selected for real-time viability. With the current 5–10 FPS headroom above the 30 FPS source rate, a larger variant may be affordable; this would quantify the accuracy-versus-speed trade-off rather than assuming nano is optimal.
+- **Model scale to other variants or newer YOLO architecture family:** The nano variant was selected for real-time viability. With the current 5–10 FPS headroom above the 30 FPS source rate, a larger variant may be affordable; this would quantify the accuracy-versus-speed trade-off rather than assuming nano is optimal.
 
 Each variant should be evaluated on a genuine held-out set (Future Work 1), since tuning against training-set metrics would optimise for memorisation rather than generalisation.
 
