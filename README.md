@@ -19,10 +19,11 @@ Four gaps this project addresses:
 # Approach
 Three models were trained and evaluated:
 
-|     Model           | Architecture      |     Class       | Annotation Type |
-|   Trunk Detection   | YOLOv8n           | Palm Tree Trunk | Bounding box    |
-| Trunk Segmentation  | YOLOv8n-seg       | Palm Tree Trunk | Polygon mask    |
-| Weed Detection      | YOLOv8n           | 15 weed species | Bounding box    |
+| Model              | Architecture | Class           | Annotation Type |
+|--------------------|--------------|-----------------|-----------------|
+| Trunk Detection    | YOLOv8n      | Palm Tree Trunk | Bounding box    |
+| Trunk Segmentation | YOLOv8n-seg  | Palm Tree Trunk | Polygon mask    |
+| Weed Detection     | YOLOv8n      | 15 weed species | Bounding box    |
 
 To ensure consistency and the results obtained are from comparing between the performance of detection and segmentation, the same YOLO architecture family was chosen to train for all models where the object detection is trained using YOLOv8n and the segmentation model is trained using YOLOv8n-seg, so any observed difference is attributable to the detection-vs-segmentation task itself rather than unrelated architectural differences. Their ground truth is derived from the same underlying polygon annotations where bounding boxes are computed from each polygon's bounding rectangle so both models can see the same annotated instances, differing only in representation.
 
@@ -97,19 +98,21 @@ Training environment: Google Colab, NVIDIA Tesla T4 GPU, Ultralytics YOLOv8.
 
 # Standard metrics
 
-| Model           | Method       | Precision | Recall    | mAP50     |
-| Weed            | Bounding Box | 69.2%     | 58.7%     | 62.8%     |
-| Trunk (Detect)  | Bounding Box | 90.7%     | 93.2%     | 96.2%     |
-| Trunk (Segment) | Polygon Mask | 94.4%     | 87.0%     | 95.3%     |
+| Model           | Method       | Precision | Recall | mAP50 |
+|-----------------|--------------|-----------|--------|-------|
+| Weed            | Bounding Box | 69.2%     | 58.7%  | 62.8% |
+| Trunk (Detect)  | Bounding Box | 90.7%     | 93.2%  | 96.2% |
+| Trunk (Segment) | Polygon Mask | 94.4%     | 87.0%  | 95.3% |
 
 Neither trunk model dominates. Detection has higher recall (misses fewer trunks); segmentation has higher precision (fewer false positives). This precision/recall trade-off is why a localisation-specific comparison was needed.
 
 RQ1 — Localisation precision
-| Metric                              |   Value   |
-| Detection Box IoU (vs. GT box)      | 0.8901    |
-| Segmentation Mask IoU (vs. GT mask) | 0.8048    |
-| Segmentation Box IoU (vs. GT box)   | 0.8585    |
-| Extraneous Area Ratio               |   21.8%   |
+| Metric                              | Value  |
+|-------------------------------------|--------|
+| Detection Box IoU (vs. GT box)      | 0.8901 |
+| Segmentation Mask IoU (vs. GT mask) | 0.8048 |
+| Segmentation Box IoU (vs. GT box)   | 0.8585 |
+| Extraneous Area Ratio               | 21.8%  |
 
 Detection scores higher on raw box IoU but that metric structurally favours boxes, since mask IoU demands pixel-level agreement across an irregular boundary while box IoU only needs rectangle overlap.
 
@@ -123,11 +126,11 @@ At 21.8%, roughly a fifth of a box-shaped spray zone would cover non-trunk area.
 
 # RQ2 — Computational cost
 
-| Model | Mean Latency (ms) | P95 (ms) | Mean FPS | Actual FPS |
-|---|---|---|---|---|
-| Weed Detection | 14.24 | 24.74 | 70.21 | 41.52 |
-| Trunk Detection | 15.15 | 26.95 | 66.01 | 40.21 |
-| Trunk Segmentation | 19.78 | 35.01 | 50.56 | 35.33 |
+| Model              | Mean Latency (ms) | P95 (ms) | Mean FPS | Actual FPS |
+|--------------------|-------------------|----------|----------|------------|
+| Weed Detection     | 14.24             | 24.74    | 70.21    | 41.52      |
+| Trunk Detection    | 15.15             | 26.95    | 66.01    | 40.21      |
+| Trunk Segmentation | 19.78             | 35.01    | 50.56    | 35.33      |
 
 Segmentation costs +30.6% mean latency and −23.4% mean FPS versus detection. It remains real-time viable: 35.33 FPS end-to-end, above the conventional 24–30 FPS threshold.
 
@@ -137,12 +140,14 @@ A secondary finding: the gap between "Mean FPS" (model compute only) and "Actual
 
 Frames were stratified into terciles by motion blur (variance of Laplacian) and brightness (mean grayscale intensity), then IoU compared across groups.
 
-| Motion Blur Group   | Detection IoU | Segmentation IoU |
-| High Blur           | 0.8893        | 0.8022           |
-| Medium Blur         | 0.8944        | 0.8222           |
-| Low Blur            | 0.8938        | 0.8189           |
+| Motion Blur Group | Detection IoU | Segmentation IoU |
+|-------------------|---------------|------------------|
+| High Blur         | 0.8893        | 0.8022           |
+| Medium Blur       | 0.8944        | 0.8222           |
+| Low Blur          | 0.8938        | 0.8189           |
 
 | Lighting Group    | Detection IoU | Segmentation IoU |
+|-------------------|---------------|------------------|
 | Low Brightness    | 0.8909        | 0.8210           |
 | Medium Brightness | 0.8936        | 0.8176           |
 | High Brightness   | 0.8931        | 0.8048           |
@@ -154,6 +159,7 @@ Important scoping note: These groups are a relative tercile split within a singl
 # RQ4 — Domain gap
 
 | Metric                | External Validation (in-domain) | Plantation Video (out-of-domain) |
+|-----------------------|---------------------------------|----------------------------------|
 | Frames/images         | 743                             | 461                              |
 | Total detections      | 8,215                           | 1,408                            |
 | Mean confidence       | 0.5507                          | 0.3978                           |
